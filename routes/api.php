@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\JwtController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\SmsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::post('login', [JwtController::class,'login']);
+Route::post('register', [JwtController::class,'register']);
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('logout', [JwtController::class,'logout']);
+
 });
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::post("/send", [SmsController::class, "send"]);
+    Route::post("/report", [SmsController::class, "report"]);
+});
+
+
+
